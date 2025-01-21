@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">MyManager2</string>
+    <string name="profile_image">Profile Image</string>
+    <string name="amount">Amount\n</string>
+    <string name="c_name">Consumer Name</string>
+    <string name="c_number">Consumer Number\n</string>
+    <string name="add">Add Consumer\n</string>
+</resources>

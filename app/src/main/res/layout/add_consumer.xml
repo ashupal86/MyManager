@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="300dp"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:backgroundTint="#FFFFFF"
+    android:padding="@dimen/cardview_default_elevation"
+    >
+
+    <EditText
+        android:id="@+id/consumer_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/c_name"
+        android:inputType="textPersonName"
+        android:layout_marginEnd="4dp"
+        android:layout_marginStart="4dp"
+        android:maxLength="22"/>
+    <EditText
+        android:id="@+id/consumer_number"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/c_number"
+android:layout_marginStart="4dp"
+        android:layout_marginEnd="4dp"
+        android:inputType="number"/>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:layout_gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/add"
+        android:textColor="#00C853"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="8dp"/>
+
+</LinearLayout>

@@ -42,7 +42,7 @@ public class RecyclerBillsAdapter extends RecyclerView.Adapter<RecyclerBillsAdap
         holder.bill_time.setText(billsArrayList.get(position).timestamp.split(" ")[1].substring(0,5));
         holder.bill_date.setText(billsArrayList.get(position).timestamp.split(" ")[0]);
         if(billsArrayList.get(position).status==1){
-            holder.amount.setTextColor(context.getResources().getColor(R.color.red));
+            holder.amount.setTextColor(context.getResources().getColor(R.color.error));
         } else if (billsArrayList.get(position).status==0) {
             holder.amount.setTextColor(context.getResources().getColor(R.color.dark_green));
 

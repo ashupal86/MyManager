@@ -1,10 +1,18 @@
 package com.example.mymanager2;
 
+import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.appcompat.widget.AppCompatButton;
+import androidx.recyclerview.widget.LinearLayoutManager;
+
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -43,7 +51,7 @@ MyDBHelper db;
         holder.consumer_name.setText(consumerList.get(position).name);
         holder.amount.setText(String.valueOf(Math.abs(consumerList.get(position).total_amount)));
         if(consumerList.get(position).total_amount<0){
-            holder.amount.setTextColor(context.getResources().getColor(R.color.red));
+            holder.amount.setTextColor(context.getResources().getColor(R.color.error));
         }else if(consumerList.get(position).total_amount>0){
             holder.amount.setTextColor(context.getResources().getColor(R.color.dark_green));
         }
@@ -51,14 +59,24 @@ MyDBHelper db;
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Dialog dialog = new Dialog(context);
+                dialog.setContentView(R.layout.activity_account);
+
+
+                ArrayList<bills> billsList = db.fetchConsumerBills(consumerList.get(position).id);
+                if(billsList.size()==0){
+                    Toast.makeText(context, "No Bills Found", Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    Toast.makeText(context, "Bills Found", Toast.LENGTH_SHORT).show();
+                }
 
 
 
-
-
-
+                dialog.show();
             }
         });
+
     }
 
     @Override

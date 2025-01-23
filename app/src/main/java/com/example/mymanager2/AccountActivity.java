@@ -27,20 +27,17 @@ public class AccountActivity extends AppCompatActivity {
             return insets;
         });
 
-        RecyclerView allbills = findViewById(R.id.all_bills);
-        allbills.setLayoutManager(new LinearLayoutManager(this));
+        RecyclerView consumer_list = findViewById(R.id.all_consumer);
+        consumer_list.setLayoutManager(new LinearLayoutManager(this));
 
         MyDBHelper db = new MyDBHelper(this);
-        ArrayList<bills> billslist = db.fetchBills();
+        ArrayList<consumer> consumerArrayList = db.fecthConsumer();
 
-        RecyclerBillsAdapter adapter = new RecyclerBillsAdapter(this, billslist);
-        adapter.updateBillList();
-        allbills.setHasFixedSize(true);
-        allbills.setAdapter(adapter);
+        RecyclerConsumerAdapter adapter = new RecyclerConsumerAdapter(this, consumerArrayList);
+        adapter.updateConsumerList();
+        consumer_list.setHasFixedSize(true);
+        consumer_list.setAdapter(adapter);
 
-        Intent ListAllConsumer=new Intent(this,ListAllConsumers.class);
-        AppCompatButton listAllConsumer=findViewById(R.id.listAllConsumer);
-        listAllConsumer.setOnClickListener(v -> startActivity(ListAllConsumer));
 
 
     }

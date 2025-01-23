@@ -7,6 +7,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import java.util.ArrayList;
 
 public class HistoryActivity extends AppCompatActivity {
 
@@ -20,5 +24,17 @@ public class HistoryActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        RecyclerView bills_list = findViewById(R.id.all_bills);
+        bills_list.setLayoutManager(new LinearLayoutManager(this));
+
+        MyDBHelper db = new MyDBHelper(this);
+        ArrayList<bills> billsArrayList = db.fetchBills();
+
+        RecyclerBillsAdapter adapter = new RecyclerBillsAdapter(this, billsArrayList);
+        adapter.updateBillList();
+        bills_list.setHasFixedSize(true);
+        bills_list.setAdapter(adapter);
+
     }
 }

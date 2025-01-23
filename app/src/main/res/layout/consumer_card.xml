@@ -1,39 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:padding="4dp"
-    >
+    android:padding="8dp"
+    android:background="?attr/selectableItemBackground"
+    android:gravity="center_vertical">
 
-    <ImageView
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/profile_image"
         android:layout_width="60dp"
         android:layout_height="60dp"
+        android:layout_marginEnd="12dp"
+        android:src="@drawable/progile_icon"
+        android:contentDescription="@string/profile_image"
+        />
 
-        android:background="@drawable/progile_icon"
-        android:contentDescription="@string/profile_image" />
+    <TextView
+        android:id="@+id/consumer_name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="@string/app_name"
+        android:textSize="18sp"
+        android:textColor="@color/primary_text"
+        android:textStyle="bold"/>
 
-        <TextView
-            android:id="@+id/consumer_name"
-            android:hint="@string/app_name"
-            android:gravity="center"
-
-            android:textSize="28sp"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            />
-        <TextView
-            android:id="@+id/amount"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:gravity="end"
-            android:paddingEnd="10dp"
-
-            android:textSize="28sp"
-
-            android:hint="@string/amount"/>
-
-
-
+    <TextView
+        android:id="@+id/amount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/amount"
+        android:textSize="18sp"
+        android:textColor="@color/amount_color"
+        android:textStyle="bold"
+        android:gravity="end"/>
 </LinearLayout>

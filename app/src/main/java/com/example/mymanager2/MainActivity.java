@@ -2,10 +2,12 @@ package com.example.mymanager2;
 
 import android.app.Dialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -41,8 +43,14 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
+        ArrayList<String> historyList=new ArrayList<>();
+
+        SharedPreferences history=getSharedPreferences("history",MODE_PRIVATE);
+
+
 //        insertSampleData();
         Intent consumer=new Intent(this,AccountActivity.class);
+            Intent intent=new Intent(this,HistoryActivity.class);
 
 
         Button cashin = findViewById(R.id.btnCashIn);
@@ -50,6 +58,10 @@ public class MainActivity extends AppCompatActivity {
         TextView result = findViewById(R.id.displayText);
         String amount=result.getText().toString();
 
+        Button History=findViewById(R.id.btnHistory);
+        History.setOnClickListener(v -> {
+            startActivity(intent);
+        });
 
         Button account=findViewById(R.id.btnAccount);
         account.setOnClickListener(v -> {
@@ -135,6 +147,7 @@ public class MainActivity extends AppCompatActivity {
     public void addConsumer() {
         Dialog dialog = new Dialog(this);
         dialog.setContentView(R.layout.add_consumer);
+        dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         dialog.show();
         EditText name = dialog.findViewById(R.id.consumer_name);
         EditText number = dialog.findViewById(R.id.consumer_number);

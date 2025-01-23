@@ -36,4 +36,5 @@
     <string name="bill_amount">Bill Amount\n</string>
     <string name="bill_date">Bill date\n</string>
     <string name="listAllConsumer">List All Consumer</string>
+    <string name="consumer_list">All Consumer</string>
 </resources>

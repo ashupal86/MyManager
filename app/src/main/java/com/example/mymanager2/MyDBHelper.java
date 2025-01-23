@@ -2,6 +2,7 @@ package com.example.mymanager2;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -146,9 +147,9 @@ public class MyDBHelper extends SQLiteOpenHelper {
    }
 
 //   TODO: create function to fecth data for specific consumer:  DONE
-public ArrayList<ContentValues> fetchConsumerBills(Integer id) {
+public ArrayList<bills> fetchConsumerBills(Integer id) {
     SQLiteDatabase db = this.getReadableDatabase();
-    ArrayList<ContentValues> bills = new ArrayList<>();
+    ArrayList<bills> arrayListbills = new ArrayList<>();
 
     Cursor cursor = null;
 
@@ -157,19 +158,22 @@ public ArrayList<ContentValues> fetchConsumerBills(Integer id) {
 
         while (cursor.moveToNext()) {
             // Create a new ContentValues object for each row
-            ContentValues bill = new ContentValues();
-
+            Integer bill_id = cursor.getInt(0); // Assuming 0 is the index for id
+            Integer consumer_id = cursor.getInt(3); // Assuming 3 is the index for consumer_id
             Integer status = cursor.getInt(4); // Assuming 4 is the index for status
             Double amount = cursor.getDouble(1); // Assuming 1 is the index for amount
             String timestamp = cursor.getString(2); // Assuming 2 is the index for timestamp
 
             // Put the values into the ContentValues object
-            bill.put("status", status);
-            bill.put("amount", amount);
-            bill.put("timestamp", timestamp);
+            bills model = new bills();
+            model.status = status;
+            model.amount = amount;
+            model.timestamp = timestamp;
+            model.consumer_id = consumer_id;
+            model.id = bill_id;
+            arrayListbills.add(model);
 
-            // Add the ContentValues object to the list
-            bills.add(bill);
+
         }
     } catch (Exception e) {
         // Handle any exceptions, maybe log the error
@@ -181,7 +185,7 @@ public ArrayList<ContentValues> fetchConsumerBills(Integer id) {
         db.close(); // Close the database connection
     }
 
-    return bills;
+    return arrayListbills;
 }
 
     public String fetchConsumerNamebyId(Integer id) {

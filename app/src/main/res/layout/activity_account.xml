@@ -8,19 +8,22 @@
     android:layout_height="match_parent"
     tools:context=".AccountActivity">
 
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/listAllConsumer"
+    <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/listAllConsumer"
+        android:text="@string/consumer_list"
+        android:textAlignment="center"
+        android:textSize="28sp"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/all_bills"
+        android:id="@+id/all_consumer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="52dp"
+        android:layout_marginTop="44dp"
+        android:padding="10dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

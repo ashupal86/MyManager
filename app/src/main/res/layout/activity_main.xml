@@ -1,25 +1,220 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".MainActivity">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/consumer_list"
+
+    <!-- Top Navigation -->
+    <LinearLayout
+        android:id="@+id/topNavigation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:layout_editor_absoluteX="1dp"
-        tools:layout_editor_absoluteY="1dp" />
+        android:orientation="horizontal"
+        android:padding="16dp">
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/add_consumer"
-        android:layout_width="wrap_content"
+        <TextView
+            android:id="@+id/btnHistory"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/history"
+            android:gravity="center"
+            android:textColor="#808080" />
+
+        <TextView
+            android:id="@+id/btnHome"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/home"
+            android:gravity="center"
+            android:textColor="@android:color/white" />
+
+        <Button
+            android:id="@+id/btnAccount"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/account"
+            android:gravity="center"
+            android:textColor="#808080" />
+    </LinearLayout>
+
+    <!-- History Items -->
+    <LinearLayout
+        android:id="@+id/historyContainer"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:layout_below="@id/topNavigation"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+    </LinearLayout>
+
+    <!-- Calculator Display -->
+    <TextView
+        android:id="@+id/displayText"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:clickable="true"
-        app:srcCompat="@android:drawable/ic_input_add"
-        tools:layout_editor_absoluteX="339dp"
-        tools:layout_editor_absoluteY="659dp" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+        android:layout_below="@id/historyContainer"
+        android:gravity="end"
+        android:padding="24dp"
+        android:text="@string/_8"
+        android:textColor="@android:color/black"
+        android:textSize="30sp"
+        android:clickable="false"
+        />
+
+    <!-- Action Buttons -->
+    <LinearLayout
+        android:id="@+id/actionButtons"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/displayText"
+        android:orientation="horizontal"
+        android:padding="8dp">
+
+        <Button
+            android:id="@+id/btnCashOut"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp"
+            android:layout_weight="1"
+            android:background="#FF4444"
+            android:text="@string/cash_out"
+            android:textColor="@android:color/white" />
+
+        <Button
+            android:id="@+id/btnCashIn"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp"
+            android:layout_weight="1"
+            android:background="#4CAF50"
+            android:text="@string/cash_in"
+            android:textColor="@android:color/white" />
+    </LinearLayout>
+
+    <!-- Calculator Buttons -->
+    <GridLayout
+        android:id="@+id/calculatorPad"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/actionButtons"
+        android:columnCount="4"
+        android:padding="8dp">
+
+        <!-- Row 1 -->
+        <Button
+            android:id="@+id/btnClear"
+            style="@style/CalculatorButton"
+            android:text="@string/c" />
+
+        <Button
+            android:id="@+id/btnBackspace"
+            style="@style/CalculatorButton"
+            android:text="@string/backspace" />
+
+        <Button
+            android:id="@+id/btnPercent"
+            style="@style/CalculatorButton"
+            android:text="@string/percentage" />
+
+        <Button
+            android:id="@+id/btnDivide"
+            style="@style/CalculatorButton.Operator"
+            android:text="@string/divide" />
+
+        <!-- Row 2 -->
+        <Button
+            android:id="@+id/btn7"
+            style="@style/CalculatorButton"
+            android:text="@string/_7" />
+
+        <Button
+            android:id="@+id/btn8"
+            style="@style/CalculatorButton"
+            android:text="@string/_8" />
+
+        <Button
+            android:id="@+id/btn9"
+            style="@style/CalculatorButton"
+            android:text="@string/_9" />
+
+        <Button
+            android:id="@+id/btnMultiply"
+            style="@style/CalculatorButton.Operator"
+            android:text="@string/multiply" />
+
+        <!-- Row 3 -->
+        <Button
+            android:id="@+id/btn4"
+            style="@style/CalculatorButton"
+            android:text="@string/_4" />
+
+        <Button
+            android:id="@+id/btn5"
+            style="@style/CalculatorButton"
+            android:text="@string/_5" />
+
+        <Button
+            android:id="@+id/btn6"
+            style="@style/CalculatorButton"
+            android:text="@string/_6" />
+
+        <Button
+            android:id="@+id/btnMinus"
+            style="@style/CalculatorButton.Operator"
+            android:text="@string/subtract" />
+
+        <!-- Row 4 -->
+        <Button
+            android:id="@+id/btn1"
+            style="@style/CalculatorButton"
+            android:text="@string/_1" />
+
+        <Button
+            android:id="@+id/btn2"
+            style="@style/CalculatorButton"
+            android:text="@string/_2" />
+
+        <Button
+            android:id="@+id/btn3"
+            style="@style/CalculatorButton"
+            android:text="@string/_3" />
+
+        <Button
+            android:id="@+id/btnPlus"
+            style="@style/CalculatorButton.Operator"
+            android:text="@string/addition" />
+
+        <!-- Row 5 -->
+        <Button
+            android:id="@+id/btn00"
+            style="@style/CalculatorButton"
+            android:text="@string/_00" />
+
+        <Button
+            android:id="@+id/btn0"
+            style="@style/CalculatorButton"
+            android:text="@string/_0" />
+
+        <Button
+            android:id="@+id/btnDot"
+            style="@style/CalculatorButton"
+            android:text="@string/dot" />
+
+        <Button
+            android:id="@+id/btnEquals"
+            style="@style/CalculatorButton.Operator"
+            android:text="@string/equal" />
+
+    </GridLayout>
+
+
+</LinearLayout>

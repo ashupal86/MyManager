@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import java.util.ArrayList;
 
@@ -80,22 +81,24 @@ public class MyDBHelper extends SQLiteOpenHelper {
     }
 
     // Method to insert a new consumer
-    public long addConsumer(String name, String phone) {
+    public void addConsumer(String name, String phone) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(COLUMN_CONSUMER_NAME, name);
         values.put(COLUMN_CONSUMER_PHONE, phone);
-        return db.insert(TABLE_CONSUMER, null, values);
+        db.insert(TABLE_CONSUMER, null, values);
+        db.close();
     }
 
     // Method to insert a new bill
-    public long addBill(double amount, int consumerId, int status) {
+    public void addBill(double amount, int consumerId, int status) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(COLUMN_BILLS_AMOUNT, amount);
         values.put(COLUMN_BILLS_CONSUMER_ID, consumerId);
         values.put(COLUMN_BILLS_STATUS, status); // 0 for cashout, 1 for cashin
-        return db.insert(TABLE_BILLS, null, values);
+        db.insert(TABLE_BILLS, null, values);
+        db.close();
     }
 
 
@@ -115,6 +118,8 @@ public class MyDBHelper extends SQLiteOpenHelper {
 
            consumerList.add(model);
        }
+       Log.d("consumerlist_data",consumerList.toString());
+       db.close();
        return consumerList;
 
    }
@@ -123,7 +128,7 @@ public class MyDBHelper extends SQLiteOpenHelper {
         SQLiteDatabase db=this.getReadableDatabase();
 
         ArrayList<bills> billsList =new ArrayList<>();
-        Cursor cursor = db.rawQuery("SELECT * FROM "+ TABLE_BILLS,null);
+        Cursor cursor = db.rawQuery("SELECT * FROM "+ TABLE_BILLS +" ORDER BY "+COLUMN_BILLS_TIMESTAMP+" DESC",null);
         while (cursor.moveToNext()){
             bills model =new bills();
             model.id=cursor.getInt(0);
@@ -135,11 +140,13 @@ public class MyDBHelper extends SQLiteOpenHelper {
 
             billsList.add(model);
         }
+        Log.d("All_bills",billsList.toString());
+        db.close();
         return billsList;
    }
 
 //   TODO: create function to fecth data for specific consumer:  DONE
-public ArrayList<ContentValues> fetchConsumerName(Integer id) {
+public ArrayList<ContentValues> fetchConsumerBills(Integer id) {
     SQLiteDatabase db = this.getReadableDatabase();
     ArrayList<ContentValues> bills = new ArrayList<>();
 
@@ -175,6 +182,30 @@ public ArrayList<ContentValues> fetchConsumerName(Integer id) {
     }
 
     return bills;
+}
+
+    public String fetchConsumerNamebyId(Integer id) {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String consumerName = null;
+        Cursor cursor = null;
+        try {
+            cursor = db.rawQuery("SELECT * FROM " + TABLE_CONSUMER + " WHERE " + COLUMN_CONSUMER_ID + "=" + id, null);
+
+            if (cursor.moveToFirst()) {
+                consumerName = cursor.getString(1); // Assuming 1 is the index for name
+            }
+        } catch (Exception e) {
+            // Handle any exceptions, maybe log the error
+            e.printStackTrace();
+        } finally {
+            if (cursor != null) {
+                cursor.close(); // Always close the cursor
+            }
+            db.close(); // Close the database connection
+        }
+        return consumerName;
+
 }
 
 

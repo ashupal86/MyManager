@@ -5,4 +5,35 @@
     <string name="c_name">Consumer Name</string>
     <string name="c_number">Consumer Number\n</string>
     <string name="add">Add Consumer\n</string>
+    <string name="history">History</string>
+    <string name="home">Home</string>
+    <string name="account">Account</string>
+    <string name="Result" />
+    <string name="cash_out">Cash Out</string>
+    <string name="cash_in">Cash In</string>
+    <string name="c">C</string>
+    <string name="backspace">⌫</string>
+    <string name="percentage">%</string>
+    <string name="divide">÷</string>
+    <string name="_7">7</string>
+    <string name="_8">8</string>
+    <string name="_9">9</string>
+    <string name="multiply">×</string>
+    <string name="_4">4</string>
+    <string name="_5">5</string>
+    <string name="_6">6</string>
+    <string name="subtract">-</string>
+    <string name="_1">1</string>
+    <string name="_2">2</string>
+    <string name="_3">3</string>
+    <string name="addition">+</string>
+    <string name="_00">00</string>
+    <string name="_0">0</string>
+    <string name="dot">.</string>
+    <string name="equal">=</string>
+    <string name="bill_time">16:00</string>
+    <string name="consumer_name">Consumer Name\n</string>
+    <string name="bill_amount">Bill Amount\n</string>
+    <string name="bill_date">Bill date\n</string>
+    <string name="listAllConsumer">List All Consumer</string>
 </resources>

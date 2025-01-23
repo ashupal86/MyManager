@@ -26,6 +26,7 @@ android:layout_marginStart="4dp"
         android:inputType="number"/>
 
     <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/add_consumer"
         android:layout_gravity="center"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

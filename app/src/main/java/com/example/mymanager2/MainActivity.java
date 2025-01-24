@@ -4,13 +4,15 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
+import android.text.TextUtils;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -21,16 +23,28 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class MainActivity extends AppCompatActivity {
 
     MyDBHelper db=new MyDBHelper(this);
+    private TextView result ;
+    private double firstNumber = 0.0;
+    private String currentOperation = "";
+    private boolean isNewCalculation = true;
+
+
+    private ArrayList<String> historyList;
+    private SharedPreferences history;
+    private LinearLayout historyText;
+    private static final String HISTORY_PREF_KEY = "calculation_history";
+    private static final int MAX_HISTORY_DISPLAY = 6;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,10 +56,49 @@ public class MainActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+        result=findViewById(R.id.displayText);
 
-        ArrayList<String> historyList=new ArrayList<>();
 
-        SharedPreferences history=getSharedPreferences("history",MODE_PRIVATE);
+        // Initialize SharedPreferences and history list
+        history = getSharedPreferences("history", MODE_PRIVATE);
+        historyText = findViewById(R.id.historyContainer);
+
+        // Load existing history
+        loadHistoryFromPreferences();
+
+
+
+
+//        TODO: Calculator Logic
+        int[] numberButtonIds = {
+                R.id.btn0, R.id.btn1, R.id.btn2, R.id.btn3,
+                R.id.btn4, R.id.btn5, R.id.btn6,
+                R.id.btn7, R.id.btn8, R.id.btn9
+        };
+
+        for (int i = 0; i < numberButtonIds.length; i++) {
+            final int number = i;
+            findViewById(numberButtonIds[i]).setOnClickListener(v -> onNumberClick(number));
+        }
+
+        // Operation buttons
+        findViewById(R.id.btnPlus).setOnClickListener(v -> setOperation("+"));
+        findViewById(R.id.btnMinus).setOnClickListener(v -> setOperation("-"));
+        findViewById(R.id.btnMultiply).setOnClickListener(v -> setOperation("*"));
+        findViewById(R.id.btnDivide).setOnClickListener(v -> setOperation("/"));
+
+        // Equals and Clear buttons
+        findViewById(R.id.btnEquals).setOnClickListener(v -> calculateResult());
+        findViewById(R.id.btnClear).setOnClickListener(v -> clearCalculator());
+
+        // Decimal point button
+        findViewById(R.id.btnDot).setOnClickListener(v -> addDecimalPoint());
+
+
+
+
+
+
 
 
 //        insertSampleData();
@@ -55,7 +108,6 @@ public class MainActivity extends AppCompatActivity {
 
         Button cashin = findViewById(R.id.btnCashIn);
         Button cashout = findViewById(R.id.btnCashOut);
-        TextView result = findViewById(R.id.displayText);
         String amount=result.getText().toString();
 
         Button History=findViewById(R.id.btnHistory);
@@ -69,32 +121,199 @@ public class MainActivity extends AppCompatActivity {
         });
 
         cashin.setOnClickListener(v -> {
-            if (CheckForInt(amount))  {
+            String resultamount=result.getText().toString();
+
+            if (CheckForInt(resultamount) && Double.parseDouble(resultamount)!=0.0)  {
                 int status=0;
-                showListDialog(status,amount);
+                showListDialog(status,resultamount);
 
-
-
+            }else{
+                Toast.makeText(this,"Invalid Amount",Toast.LENGTH_SHORT).show();
             }
 
         });
 
         cashout.setOnClickListener(v -> {
-            if (CheckForInt(amount)) {
+            String resultamount=result.getText().toString();
+
+            if (CheckForInt(resultamount) && Double.parseDouble(resultamount)!=0.0) {
                 int status=1;
-                showListDialog(status,amount);
+                showListDialog(status,resultamount);
+            }else {
+                Toast.makeText(this,"Invalid Amount",Toast.LENGTH_SHORT).show();
+            }
 
-            }});
-
-
-
-
-
+        });
 
 
 
 
 
+
+
+
+
+
+    }
+
+    private void loadHistoryFromPreferences() {
+        // Load history from SharedPreferences
+        String savedHistory = history.getString(HISTORY_PREF_KEY, "");
+        historyList = new ArrayList<>(Arrays.asList(savedHistory.split("\\|")));
+
+        // Remove empty strings
+        historyList.removeAll(Collections.singleton(""));
+
+        // Display history
+        updateHistoryDisplay();
+    }
+
+    private void saveCalculationToHistory(String calculation) {
+        // Add to history list
+        historyList.add(calculation);
+
+        // Limit list size if needed
+        if (historyList.size() > 20) {
+            historyList.remove(0);
+        }
+
+        // Save to SharedPreferences
+        String historyString = TextUtils.join("|", historyList);
+        history.edit().putString(HISTORY_PREF_KEY, historyString).apply();
+
+        // Update display
+        updateHistoryDisplay();
+    }
+
+    private void updateHistoryDisplay() {
+        // Clear previous history
+        historyText.removeAllViews();
+
+        if (historyList == null || historyList.isEmpty()) {
+            return;
+        }
+
+        // Determine start index to show last 5 items
+        int startIndex = Math.max(0, historyList.size() - MAX_HISTORY_DISPLAY);
+
+        ArrayList<TextView> historyTextViews = new ArrayList<>();
+
+        // Create TextViews for recent calculations in reverse order
+        for (int i = historyList.size() - 1; i >= startIndex; i--) {
+            TextView historyItem = new TextView(this);
+            historyItem.setGravity(Gravity.END);
+            historyItem.setText(historyList.get(i));
+            historyItem.setTextSize(16);
+            historyItem.setPadding(8, 8, 8, 8);
+            historyTextViews.add(historyItem);
+        }
+
+        Collections.reverse(historyTextViews);
+        for (TextView historyItem : historyTextViews) {
+            historyText.addView(historyItem);
+        }
+
+
+    }
+
+
+
+    private void onNumberClick(int number) {
+        if (isNewCalculation) {
+            result.setText(String.valueOf(number));
+            isNewCalculation = false;
+        } else {
+            String currentText = result.getText().toString();
+            result.setText(currentText + number);
+        }
+    }
+
+    private void setOperation(String operation) {
+        firstNumber = Double.parseDouble(result.getText().toString());
+        currentOperation = operation;
+        result.setText("");
+        isNewCalculation = true;
+    }
+
+    private void calculateResult() {
+        double secondNumber = Double.parseDouble(result.getText().toString());
+        double resultv = 0;
+        if(secondNumber==0.0 || secondNumber==0 || secondNumber==00 ){
+            result.setText("0");
+            return;
+        }
+        else if(firstNumber==0.0 || firstNumber==0 || firstNumber==00){
+            result.setText("0");
+            return;
+        }
+        else if (currentOperation==""){
+            result.setText("0");
+            return;
+        }
+        try {
+
+            switch (currentOperation) {
+                case "+":
+                    resultv = firstNumber + secondNumber;
+                    break;
+                case "-":
+                    resultv = firstNumber - secondNumber;
+                    break;
+                case "*":
+                    resultv = firstNumber * secondNumber;
+                    break;
+                case "/":
+                    if (secondNumber != 0) {
+                        resultv = firstNumber / secondNumber;
+                    } else {
+                        result.setText("Error");
+                        return;
+                    }
+                    break;
+                case "":
+                    result.setText("Error");
+                    break;
+                default:
+                    result.setText("Error");
+                    return;
+
+
+
+            }
+
+
+
+            // Format calculation string before saving
+            String calculation = String.format("%.2f %s %.2f = %.2f",firstNumber, currentOperation, secondNumber, resultv);
+
+            // Save to history immediately
+            saveCalculationToHistory(calculation);
+
+            // Update result display
+            result.setText(String.valueOf(resultv));
+            isNewCalculation = true;
+            currentOperation = "";
+
+
+        }catch (Exception e){
+            result.setText("Error");
+            return;
+        }
+
+    }
+
+    private void clearCalculator() {
+        result.setText("0");
+        firstNumber = 0.0;
+        currentOperation = "";
+        isNewCalculation = true;
+    }
+
+    private void addDecimalPoint() {
+        String currentText = result.getText().toString();
+        if (!currentText.contains(".")) {
+            result.setText(currentText + ".");
+        }
     }
 
     private void showListDialog(int status, String amount) {

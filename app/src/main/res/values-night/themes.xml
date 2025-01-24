@@ -2,6 +2,38 @@
     <!-- Base application theme. -->
     <style name="Base.Theme.MyManager2" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your dark theme here. -->
+        <item name="android:textColor">@color/white</item>
         <!-- <item name="colorPrimary">@color/my_dark_primary</item> -->
+    </style>
+    <style name="CalculatorButton">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">0dp</item>
+        <item name="android:layout_columnWeight">1</item>
+        <item name="android:layout_rowWeight">1</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:background">?attr/selectableItemBackground</item>
+        <item name="android:textColor">@color/white</item>
+    </style>
+
+    <style name="CalculatorButton.Operator">
+        <item name="android:textColor">#FF9800</item>
+    </style>
+    <style name="resultTextview">
+        <item name="android:textColor">@color/white</item>
+        <item name="android:gravity">end</item>
+    </style>
+    <style name="historyText">
+        <item name="android:textColor">@color/white</item>
+        <item name="android:gravity">bottom|end</item>
+    </style>
+
+    <style name="billtime">
+        <item name="android:textColor">@color/gray</item>
+    </style>
+    <style name="billdate">
+        <item name="android:textColor">@color/white</item>
+    </style>
+    <style name="consumer_name">
+        <item name="android:textColor">@color/white</item>
     </style>
 </resources>

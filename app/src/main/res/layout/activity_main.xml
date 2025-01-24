@@ -24,9 +24,9 @@
             android:layout_weight="1"
             android:text="@string/history"
             android:gravity="center"
-            android:textColor="#808080" />
+            android:textColor="@color/white" />
 
-        <TextView
+        <Button
             android:id="@+id/btnHome"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -42,17 +42,21 @@
             android:layout_weight="1"
             android:text="@string/account"
             android:gravity="center"
-            android:textColor="#808080" />
+            android:textColor="@color/white" />
     </LinearLayout>
 
     <!-- History Items -->
     <LinearLayout
         android:id="@+id/historyContainer"
         android:layout_width="match_parent"
-        android:layout_height="150dp"
+        android:layout_height="200dp"
         android:layout_below="@id/topNavigation"
         android:orientation="vertical"
-        android:padding="16dp">
+        android:padding="10dp"
+        android:gravity="bottom|end"
+        style="@style/historyText"
+
+        >
 
     </LinearLayout>
 
@@ -63,11 +67,11 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/historyContainer"
         android:gravity="end"
-        android:padding="24dp"
-        android:text="@string/_8"
-        android:textColor="@android:color/black"
+        android:padding="10dp"
+        android:text="@string/_00"
         android:textSize="30sp"
         android:clickable="false"
+        style="@style/resultTextview"
         />
 
     <!-- Action Buttons -->
@@ -79,25 +83,25 @@
         android:orientation="horizontal"
         android:padding="8dp">
 
-        <com.google.android.material.button.MaterialButton
+        <Button
             android:id="@+id/btnCashOut"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="4dp"
             android:layout_weight="1"
-            android:background="#FF4444"
             android:text="@string/cash_out"
-            android:textColor="@android:color/white" />
+            android:textColor="@android:color/white"
+            style="@style/cashin"/>
 
-        <com.google.android.material.button.MaterialButton
+        <Button
             android:id="@+id/btnCashIn"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="4dp"
             android:layout_weight="1"
-            android:background="#4CAF50"
             android:text="@string/cash_in"
-            android:textColor="@android:color/white" />
+            android:textColor="@android:color/white"
+            style="@style/cashout"/>
     </LinearLayout>
 
     <!-- Calculator Buttons -->
@@ -112,17 +116,17 @@
         <!-- Row 1 -->
         <Button
             android:id="@+id/btnClear"
-            style="@style/CalculatorButton"
+            style="@style/CalculatorButton.Operator"
             android:text="@string/c" />
 
         <Button
             android:id="@+id/btnBackspace"
-            style="@style/CalculatorButton"
+            style="@style/CalculatorButton.Operator"
             android:text="@string/backspace" />
 
         <Button
             android:id="@+id/btnPercent"
-            style="@style/CalculatorButton"
+            style="@style/CalculatorButton.Operator"
             android:text="@string/percentage" />
 
         <Button

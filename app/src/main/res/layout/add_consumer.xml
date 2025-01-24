@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:background="@color/surface"
+
     android:padding="16dp">
 
     <com.google.android.material.textfield.TextInputLayout
@@ -19,6 +19,7 @@
             android:layout_height="wrap_content"
             android:hint="@string/c_name"
             android:inputType="textPersonName"
+            style="@style/consumer_name"
             android:maxLength="22"/>
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -33,6 +34,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/c_number"
+            style="@style/consumer_name"
             android:inputType="number"/>
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -41,7 +43,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="10dp"
+        android:textAlignment="center"
         android:text="@string/add"
         style="@style/Widget.MaterialComponents.Button.OutlinedButton"/>
 </LinearLayout>

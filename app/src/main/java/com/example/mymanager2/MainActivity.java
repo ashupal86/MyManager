@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,9 +33,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class MainActivity extends AppCompatActivity {
 
     MyDBHelper db=new MyDBHelper(this);
-    private TextView result ;
-    private double firstNumber = 0.0;
-    private String currentOperation = "";
+    private TextView displayText, resultDisplay;
+
+
     private boolean isNewCalculation = true;
 
 
@@ -43,6 +44,8 @@ public class MainActivity extends AppCompatActivity {
     private LinearLayout historyText;
     private static final String HISTORY_PREF_KEY = "calculation_history";
     private static final int MAX_HISTORY_DISPLAY = 6;
+
+    public StringBuilder expression = new StringBuilder();
 
 
 
@@ -56,7 +59,6 @@ public class MainActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-        result=findViewById(R.id.displayText);
 
 
         // Initialize SharedPreferences and history list
@@ -70,31 +72,42 @@ public class MainActivity extends AppCompatActivity {
 
 
 //        TODO: Calculator Logic
-        int[] numberButtonIds = {
-                R.id.btn0, R.id.btn1, R.id.btn2, R.id.btn3,
-                R.id.btn4, R.id.btn5, R.id.btn6,
-                R.id.btn7, R.id.btn8, R.id.btn9
+        displayText = findViewById(R.id.displayText);
+        resultDisplay = findViewById(R.id.resultdisplay);
+
+        // Number buttons setup
+//        int[] numberButtonIds = {
+//                R.id.btn0, R.id.btn00, R.id.btn1, R.id.btn2, R.id.btn3,
+//                R.id.btn4, R.id.btn5, R.id.btn6, R.id.btn7, R.id.btn8, R.id.btn9, R.id.btnDot
+//        };
+//        for (int id : numberButtonIds) {
+//            findViewById(id).setOnClickListener(v -> {
+//                onNumberClick(((Button) v).getText().toString());
+//            });
+//        }
+
+
+
+        // Operator buttons setup
+        int[] operatorButtonIds = {
+                R.id.btnPlus, R.id.btnMinus, R.id.btnMultiply, R.id.btnDivide, R.id.btnPercent
         };
 
-        for (int i = 0; i < numberButtonIds.length; i++) {
-            final int number = i;
-            findViewById(numberButtonIds[i]).setOnClickListener(v -> onNumberClick(number));
+        for (int id : operatorButtonIds) {
+            findViewById(id).setOnClickListener(v -> {
+                onOperatorClick(((Button)v).getText().toString());
+            });
         }
 
-        // Operation buttons
-        findViewById(R.id.btnPlus).setOnClickListener(v -> setOperation("+"));
-        findViewById(R.id.btnMinus).setOnClickListener(v -> setOperation("-"));
-        findViewById(R.id.btnMultiply).setOnClickListener(v -> setOperation("*"));
-        findViewById(R.id.btnDivide).setOnClickListener(v -> setOperation("/"));
-
-        // Equals and Clear buttons
-        findViewById(R.id.btnEquals).setOnClickListener(v -> calculateResult());
-        findViewById(R.id.btnClear).setOnClickListener(v -> clearCalculator());
-
-        // Decimal point button
-        findViewById(R.id.btnDot).setOnClickListener(v -> addDecimalPoint());
+        // Special buttons
+        findViewById(R.id.btnEquals).setOnClickListener(v -> {
+            calculateFinalResult();
+        });
 
 
+        findViewById(R.id.btnBackspace).setOnClickListener(v -> {
+            backspace();
+        });
 
 
 
@@ -108,7 +121,7 @@ public class MainActivity extends AppCompatActivity {
 
         Button cashin = findViewById(R.id.btnCashIn);
         Button cashout = findViewById(R.id.btnCashOut);
-        String amount=result.getText().toString();
+        String amount=resultDisplay.getText().toString();
 
         Button History=findViewById(R.id.btnHistory);
         History.setOnClickListener(v -> {
@@ -121,7 +134,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         cashin.setOnClickListener(v -> {
-            String resultamount=result.getText().toString();
+            String resultamount=resultDisplay.getText().toString();
 
             if (CheckForInt(resultamount) && Double.parseDouble(resultamount)!=0.0)  {
                 int status=0;
@@ -134,7 +147,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         cashout.setOnClickListener(v -> {
-            String resultamount=result.getText().toString();
+            String resultamount=resultDisplay.getText().toString();
 
             if (CheckForInt(resultamount) && Double.parseDouble(resultamount)!=0.0) {
                 int status=1;
@@ -155,6 +168,135 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
+
+
+
+    public void calculateFinalResult() {
+        String expressions = displayText.getText().toString();
+        try {
+            double result = Expression.evaluate(expressions);
+            if(!resultDisplay.getText().toString().isEmpty()){
+
+                saveCalculationToHistory(expressions + " = " + resultDisplay.getText().toString());
+            }
+
+            // Check if the result is an integer (no decimal part)
+            if (result == (int) result) {
+                // Display the result as an integer
+                displayText.setText(String.format("%d", (int) result));
+                resultDisplay.setText(String.format("%d", (int) result)); // Optional, if you want to set the result display too
+            } else {
+                // Display the result with 2 decimal places
+                displayText.setText(String.format("%.2f", result));
+                resultDisplay.setText(String.format("%.2f", result)); // Optional, if you want to set the result display too
+            }
+
+            isNewCalculation = true;
+
+            expression.setLength(0);
+            expression.append(String.format("%.2f", result)); // Keep the result as 2 decimal places for calculation purposes
+            resultDisplay.setText("");
+        } catch (Exception e) {
+            resultDisplay.setText("Error");
+        }
+    }
+
+
+    private void calculateAndUpdateResult() {
+        String expressions = displayText.getText().toString();
+        try {
+            if (!expressions.isEmpty() && !isNewCalculation) {
+                double result = Expression.evaluate(expressions);
+                resultDisplay.setText(String.valueOf(result));
+
+            } else {
+                resultDisplay.setText(""); // Clear the result if no expression is present
+            }
+        } catch (Exception e) {
+
+          // Show error if calculation fails
+        }
+    }
+
+
+
+    private void backspace() {
+        String currentText = displayText.getText().toString();
+
+        // Check if the current text is not empty and we are not in a new calculation
+        if (!currentText.isEmpty() && !isNewCalculation) {
+            // Remove the last character from both display and expression
+            displayText.setText(currentText.substring(0, currentText.length() - 1));
+            expression.setLength(expression.length() - 1);  // Remove the last character from the expression
+
+            calculateAndUpdateResult();  // Recalculate after backspace
+        } else if (isNewCalculation) {
+            // In case of a new calculation, reset the display and expression
+            if (!currentText.isEmpty()) {
+                displayText.setText(currentText.substring(0, currentText.length() - 1));
+                expression.setLength(expression.length() - 1);  // Update expression to reflect backspace
+            }
+
+            calculateAndUpdateResult();  // Recalculate after backspace
+        }
+    }
+
+
+    private void onOperatorClick(String operator) {
+        String currentText = displayText.getText().toString();
+        if (!currentText.isEmpty() && Character.isDigit(currentText.charAt(currentText.length() - 1))) {
+            displayText.append(operator);
+            expression.append(operator);
+            isNewCalculation=false;
+//            Toast.makeText(this,operator,Toast.LENGTH_SHORT).show();
+        }
+    }
+
+
+
+    public void onButtonClick(View view) {
+        Button button = (Button) view;
+        String input = button.getText().toString();
+//        Toast.makeText(this,input,Toast.LENGTH_SHORT).show();
+
+        // Handle clear button
+        if (input.equals("C")) {
+            expression.setLength(0); // Clear the expression
+            displayText.setText("");  // Clear the display text
+            resultDisplay.setText(""); // Clear the result display
+            return;
+        }
+
+        // Check if input is an operator
+        String operators = "+-*/%";
+        if (operators.contains(input)) {
+            // Avoid consecutive operators
+            if (expression.length() == 0 || operators.contains(String.valueOf(expression.charAt(expression.length() - 1)))) {
+                return; // Ignore the new operator
+            }
+        }
+
+        // Append input to the expression
+        expression.append(input);
+        displayText.setText(expression.toString()); // Update the display with the current expression
+
+        // Calculate and display the result
+        try {
+            if(!isNewCalculation){
+                double result = Expression.evaluate(expression.toString()); // Use your custom Expression class
+                if(result==(int)result){
+                    resultDisplay.setText(String.valueOf((int) result));
+                }else {
+
+                resultDisplay.setText(String.format("%.2f",result));
+                }
+//                isNewCalculation=true;
+            }
+        } catch (Exception e) {
+            resultDisplay.setText("calculation Error"); // Handle invalid expression
+        }
+    }
+
 
     private void loadHistoryFromPreferences() {
         // Load history from SharedPreferences
@@ -218,106 +360,11 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-    private void onNumberClick(int number) {
-        if (isNewCalculation) {
-            result.setText(String.valueOf(number));
-            isNewCalculation = false;
-        } else {
-            String currentText = result.getText().toString();
-            result.setText(currentText + number);
-        }
-    }
-
-    private void setOperation(String operation) {
-        firstNumber = Double.parseDouble(result.getText().toString());
-        currentOperation = operation;
-        result.setText("");
-        isNewCalculation = true;
-    }
-
-    private void calculateResult() {
-        double secondNumber = Double.parseDouble(result.getText().toString());
-        double resultv = 0;
-        if(secondNumber==0.0 || secondNumber==0 || secondNumber==00 ){
-            result.setText("0");
-            return;
-        }
-        else if(firstNumber==0.0 || firstNumber==0 || firstNumber==00){
-            result.setText("0");
-            return;
-        }
-        else if (currentOperation==""){
-            result.setText("0");
-            return;
-        }
-        try {
-
-            switch (currentOperation) {
-                case "+":
-                    resultv = firstNumber + secondNumber;
-                    break;
-                case "-":
-                    resultv = firstNumber - secondNumber;
-                    break;
-                case "*":
-                    resultv = firstNumber * secondNumber;
-                    break;
-                case "/":
-                    if (secondNumber != 0) {
-                        resultv = firstNumber / secondNumber;
-                    } else {
-                        result.setText("Error");
-                        return;
-                    }
-                    break;
-                case "":
-                    result.setText("Error");
-                    break;
-                default:
-                    result.setText("Error");
-                    return;
 
 
-
-            }
-
-
-
-            // Format calculation string before saving
-            String calculation = String.format("%.2f %s %.2f = %.2f",firstNumber, currentOperation, secondNumber, resultv);
-
-            // Save to history immediately
-            saveCalculationToHistory(calculation);
-
-            // Update result display
-            result.setText(String.valueOf(resultv));
-            isNewCalculation = true;
-            currentOperation = "";
-
-
-        }catch (Exception e){
-            result.setText("Error");
-            return;
-        }
-
-    }
-
-    private void clearCalculator() {
-        result.setText("0");
-        firstNumber = 0.0;
-        currentOperation = "";
-        isNewCalculation = true;
-    }
-
-    private void addDecimalPoint() {
-        String currentText = result.getText().toString();
-        if (!currentText.contains(".")) {
-            result.setText(currentText + ".");
-        }
-    }
 
     private void showListDialog(int status, String amount) {
-        
+
         // Data for the ListView
         ArrayList<consumer> consumers =db.fecthConsumer();
         String[] items = new String[consumers.size()];

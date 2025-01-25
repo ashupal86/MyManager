@@ -135,12 +135,19 @@ public class MainActivity extends AppCompatActivity {
 
         cashin.setOnClickListener(v -> {
             String resultamount=resultDisplay.getText().toString();
+            String displayamount=displayText.getText().toString();
 
-            if (CheckForInt(resultamount) && Double.parseDouble(resultamount)!=0.0)  {
-                int status=0;
+            int status=0;
+            if (CheckForInt(resultamount) && Double.parseDouble(resultamount)!=0.0 && !resultamount.isEmpty())  {
+
+
                 showListDialog(status,resultamount);
 
-            }else{
+
+            }else if(CheckForInt(displayamount) && Double.parseDouble(displayamount)!=0.0 && !displayamount.isEmpty()){
+                showListDialog(status,displayamount);
+            }
+            else{
                 Toast.makeText(this,"Invalid Amount",Toast.LENGTH_SHORT).show();
             }
 
@@ -148,11 +155,19 @@ public class MainActivity extends AppCompatActivity {
 
         cashout.setOnClickListener(v -> {
             String resultamount=resultDisplay.getText().toString();
+            String displayamount=displayText.getText().toString();
 
-            if (CheckForInt(resultamount) && Double.parseDouble(resultamount)!=0.0) {
-                int status=1;
-                showListDialog(status,resultamount);
-            }else {
+
+            int status=1;
+            if (CheckForInt(resultamount) && Double.parseDouble(resultamount)!=0.0 && !resultamount.isEmpty()) {
+
+
+                    showListDialog(status,resultamount);
+
+            }else if(CheckForInt(displayamount) && Double.parseDouble(displayamount)!=0.0 && !displayamount.isEmpty()){
+                showListDialog(status,displayamount);
+            }
+            else {
                 Toast.makeText(this,"Invalid Amount",Toast.LENGTH_SHORT).show();
             }
 
@@ -175,7 +190,7 @@ public class MainActivity extends AppCompatActivity {
         String expressions = displayText.getText().toString();
         try {
             double result = Expression.evaluate(expressions);
-            if(!resultDisplay.getText().toString().isEmpty()){
+            if(!resultDisplay.getText().toString().isEmpty() && !resultDisplay.getText().toString().equals(displayText.getText().toString())){
 
                 saveCalculationToHistory(expressions + " = " + resultDisplay.getText().toString());
             }
@@ -194,7 +209,7 @@ public class MainActivity extends AppCompatActivity {
             isNewCalculation = true;
 
             expression.setLength(0);
-            expression.append(String.format("%.2f", result)); // Keep the result as 2 decimal places for calculation purposes
+            expression.append(String.format("%d", (int)result)); // Keep the result as 2 decimal places for calculation purposes
             resultDisplay.setText("");
         } catch (Exception e) {
             resultDisplay.setText("Error");
@@ -210,7 +225,7 @@ public class MainActivity extends AppCompatActivity {
                 resultDisplay.setText(String.valueOf(result));
 
             } else {
-                resultDisplay.setText(""); // Clear the result if no expression is present
+                resultDisplay.setText(expressions); // Clear the result if no expression is present
             }
         } catch (Exception e) {
 
@@ -281,6 +296,7 @@ public class MainActivity extends AppCompatActivity {
         displayText.setText(expression.toString()); // Update the display with the current expression
 
         // Calculate and display the result
+        calculateAndUpdateResult();
         try {
             if(!isNewCalculation){
                 double result = Expression.evaluate(expression.toString()); // Use your custom Expression class

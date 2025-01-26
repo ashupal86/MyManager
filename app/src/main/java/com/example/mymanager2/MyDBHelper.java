@@ -19,6 +19,8 @@ public class MyDBHelper extends SQLiteOpenHelper {
     private static final String TABLE_CONSUMER = "Consumer";
     private static final String TABLE_BILLS = "Bills";
 
+    private static final String TABLE_DELETED_USERS="deleted_users";
+
     // Consumer Table Columns
     private static final String COLUMN_CONSUMER_ID = "id";
     private static final String COLUMN_CONSUMER_NAME = "name";
@@ -57,6 +59,15 @@ public class MyDBHelper extends SQLiteOpenHelper {
                 + COLUMN_BILLS_STATUS + " INTEGER NOT NULL CHECK (" + COLUMN_BILLS_STATUS + " IN (0, 1)), "
                 + "FOREIGN KEY (" + COLUMN_BILLS_CONSUMER_ID + ") REFERENCES " + TABLE_CONSUMER + "(" + COLUMN_CONSUMER_ID + ") ON DELETE CASCADE)";
         db.execSQL(CREATE_TABLE_BILLS);
+
+    String CREATE_TABLE_DELETED_USERS="CREATE TABLE IF NOT EXISTS deleted_users (" + COLUMN_CONSUMER_ID + " NOT NULL, " +
+            COLUMN_CONSUMER_NAME + " TEXT NOT NULL, " + COLUMN_CONSUMER_PHONE + " TEXT UNIQUE NOT NULL, " + COLUMN_CONSUMER_TIMESTAMP + " DATETIME DEFAULT CURRENT_TIMESTAMP, " + COLUMN_CONSUMER_TOTAL_AMOUNT + " NOT NULL)";
+
+    db.execSQL(CREATE_TABLE_DELETED_USERS);
+
+    String CREATE_TABLE_DELETED_BILLS="CREATE TABLE IF NOT EXISTS deleted_bills (" + COLUMN_BILLS_ID + " NOT NULL, " + COLUMN_BILLS_AMOUNT + " REAL NOT NULL, " + COLUMN_BILLS_TIMESTAMP + " DATETIME DEFAULT CURRENT_TIMESTAMP, " + COLUMN_BILLS_CONSUMER_ID + " NOT NULL)";
+    db.execSQL(CREATE_TABLE_DELETED_BILLS);
+
 
         // Create Trigger to update Consumer.total_amount
         String CREATE_TRIGGER_UPDATE_TOTAL_AMOUNT = "CREATE TRIGGER update_total_amount "
@@ -209,8 +220,106 @@ public ArrayList<bills> fetchConsumerBills(Integer id) {
             db.close(); // Close the database connection
         }
         return consumerName;
+    }
+
+    public void DeleteConsumer(Integer id){
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor consumerCursor = null;
+        Cursor billsCursor = null;
+
+        try {
+            // Start a transaction
+            db.beginTransaction();
+
+            // Retrieve consumer details
+            consumerCursor = db.rawQuery("SELECT * FROM " + TABLE_CONSUMER + " WHERE " + COLUMN_CONSUMER_ID + " = ?", new String[]{String.valueOf(id)});
+            if (consumerCursor.moveToFirst()) {
+                String consumerName = consumerCursor.getString(consumerCursor.getColumnIndexOrThrow(COLUMN_CONSUMER_NAME));
+                String consumerPhone = consumerCursor.getString(consumerCursor.getColumnIndexOrThrow(COLUMN_CONSUMER_PHONE));
+                double consumerTotalAmount = consumerCursor.getDouble(consumerCursor.getColumnIndexOrThrow(COLUMN_CONSUMER_TOTAL_AMOUNT));
+
+                // Insert the consumer details into the deleted_users table
+                db.execSQL("INSERT INTO deleted_users (" +
+                                COLUMN_CONSUMER_ID + ", " +
+                                COLUMN_CONSUMER_NAME + ", " +
+                                COLUMN_CONSUMER_PHONE + ", " +
+                                COLUMN_CONSUMER_TOTAL_AMOUNT + ") VALUES (?, ?, ?, ?)",
+                        new Object[]{id, consumerName, consumerPhone, consumerTotalAmount});
+            }
+
+            // Retrieve and archive bills associated with the consumer
+            billsCursor = db.rawQuery("SELECT * FROM " + TABLE_BILLS + " WHERE " + COLUMN_BILLS_CONSUMER_ID + " = ?", new String[]{String.valueOf(id)});
+            while (billsCursor.moveToNext()) {
+                int billId = billsCursor.getInt(billsCursor.getColumnIndexOrThrow(COLUMN_BILLS_ID));
+                double billAmount = billsCursor.getDouble(billsCursor.getColumnIndexOrThrow(COLUMN_BILLS_AMOUNT));
+
+                // Insert the deleted bills into the deleted_bills table
+                db.execSQL("INSERT INTO deleted_bills (" +
+                                COLUMN_BILLS_ID + ", " +
+                                COLUMN_BILLS_AMOUNT + ", " +
+                                COLUMN_BILLS_CONSUMER_ID + ") VALUES (?, ?, ?)",
+                        new Object[]{billId, billAmount, id});
+            }
+
+            // Delete only the bills from the bills table
+            db.execSQL("DELETE FROM " + TABLE_BILLS + " WHERE " + COLUMN_BILLS_CONSUMER_ID + " = ?", new String[]{String.valueOf(id)});
+
+            // Commit the transaction
+            db.setTransactionSuccessful();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (consumerCursor != null) {
+                consumerCursor.close();
+            }
+            if (billsCursor != null) {
+                billsCursor.close();
+            }
+            db.endTransaction();
+            db.close();
+        }
+    }
+
+    public ArrayList<consumer> fetchActiveConsumers() {
+        ArrayList<consumer> activeConsumers = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = null;
+
+        try {
+            // Query to fetch consumers who are NOT in the deleted_users table
+            String query = "SELECT * FROM " + TABLE_CONSUMER + " WHERE " + COLUMN_CONSUMER_ID +
+                    " NOT IN (SELECT " + COLUMN_CONSUMER_ID + " FROM " + TABLE_DELETED_USERS + ")";
+
+            cursor = db.rawQuery(query, null);
+
+            // Populate the list of active consumers
+            while (cursor.moveToNext()) {
+                int id = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_CONSUMER_ID));
+                String name = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_CONSUMER_NAME));
+                String phone = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_CONSUMER_PHONE));
+                double totalAmount = cursor.getDouble(cursor.getColumnIndexOrThrow(COLUMN_CONSUMER_TOTAL_AMOUNT));
+
+                consumer consumer = new consumer();
+                consumer.id = id;
+                consumer.name = name;
+                consumer.number = phone;
+                consumer.total_amount = (int) totalAmount;
+
+                activeConsumers.add(consumer);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+            db.close();
+        }
+
+        return activeConsumers;
+    }
+
 
 }
 
 
-}

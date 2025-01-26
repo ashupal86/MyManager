@@ -382,11 +382,8 @@ public class MainActivity extends AppCompatActivity {
     private void showListDialog(int status, String amount) {
 
         // Data for the ListView
-        ArrayList<consumer> consumers =db.fecthConsumer();
-        String[] items = new String[consumers.size()];
-        for (int i = 0; i < consumers.size(); i++) {
-            items[i] = consumers.get(i).name;
-        }
+        ArrayList<consumer> consumers =db.fetchActiveConsumers();
+
 
         // Inflate the custom layout
         LayoutInflater inflater = LayoutInflater.from(this);
@@ -396,7 +393,7 @@ public class MainActivity extends AppCompatActivity {
         ListView listView = dialogView.findViewById(R.id.dialogListView);
 
         // Set an adapter for the ListView
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this,android.R.layout.simple_list_item_1,items);
+        ConsumerAdapter adapter = new ConsumerAdapter(this,consumers);
         listView.setAdapter(adapter);
 
         // Set up the AlertDialog
@@ -419,6 +416,7 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this, "Bill added successfully", Toast.LENGTH_SHORT).show();
             dialog.dismiss(); // Close the dialog
         });
+
 
         // Show the dialog
         dialog.show();

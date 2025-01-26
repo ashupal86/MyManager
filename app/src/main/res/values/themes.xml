@@ -22,14 +22,18 @@
     <style name="CalculatorButton.Operator">
         <item name="android:textColor">#FF9800</item>
     </style>
-    
+
     <style name="cashin">
-        <item name="android:background">@color/amount_color</item>
+        <item name="android:background">#4CAF50</item> <!-- Replace with your desired color -->
+        <item name="android:textColor">#FFFFFF</item>
     </style>
+
     <style name="cashout">
-        <item name="android:background">@color/cash_out</item>
+        <item name="android:background">#F44336</item> <!-- Replace with your desired color -->
+        <item name="android:textColor">#FFFFFF</item>
     </style>
-    
+
+
     <style name="billtime">
         <item name="android:textColor">@color/primary_text</item>
     </style>

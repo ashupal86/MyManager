@@ -87,34 +87,37 @@
 />
     <!-- Action Buttons -->
     <LinearLayout
-        android:id="@+id/actionButtons"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/displayText"
         android:orientation="horizontal"
         android:padding="8dp">
 
-        <Button
-            android:id="@+id/btnCashOut"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_margin="4dp"
-            android:layout_weight="1"
-            style="@style/cashout"
-            android:text="@string/cash_out"
-            android:textColor="@android:color/white"
-            />
 
         <Button
             android:id="@+id/btnCashIn"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_margin="4dp"
             android:layout_weight="1"
-            style="@style/cashin"
             android:text="@string/cash_in"
-            android:textColor="@android:color/white"
-            />
+            android:textStyle="bold"
+            android:textSize="20sp"
+            android:textColor="@color/white"
+            android:backgroundTint="@color/amount_color"
+/>
+
+        <Button
+
+        android:id="@+id/btnCashOut"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/cash_out"
+            android:textStyle="bold"
+            android:textSize="20sp"
+            android:textColor="@color/white"
+            android:backgroundTint="@color/cash_out"
+          />
+
     </LinearLayout>
 
     <!-- Calculator Buttons -->

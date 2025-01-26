@@ -38,8 +38,7 @@ public class ConsumerAdapter extends ArrayAdapter<consumer> {
 
         // Set the consumer name to the TextView
         itemText.setText(consumers.get(position).name);
-
-        // Set a click listener for the delete icon
+             // Set a click listener for the delete icon
         deleteIcon.setOnClickListener(v -> {
             // Remove the item from the list
             int id = consumers.get(position).id;

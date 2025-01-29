@@ -418,6 +418,8 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this, "Bill added successfully", Toast.LENGTH_SHORT).show();
             dialog.dismiss(); // Close the dialog
         });
+        dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+
 
 
         // Show the dialog

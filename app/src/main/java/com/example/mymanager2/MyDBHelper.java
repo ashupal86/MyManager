@@ -13,7 +13,7 @@ import java.util.ArrayList;
 public class MyDBHelper extends SQLiteOpenHelper {
     // Database Information
     private static final String DATABASE_NAME = "cashflow.db";
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
 
     // Table Names
     private static final String TABLE_CONSUMER = "Consumer";
@@ -60,13 +60,15 @@ public class MyDBHelper extends SQLiteOpenHelper {
                 + "FOREIGN KEY (" + COLUMN_BILLS_CONSUMER_ID + ") REFERENCES " + TABLE_CONSUMER + "(" + COLUMN_CONSUMER_ID + ") ON DELETE CASCADE)";
         db.execSQL(CREATE_TABLE_BILLS);
 
-    String CREATE_TABLE_DELETED_USERS="CREATE TABLE IF NOT EXISTS deleted_users (" + COLUMN_CONSUMER_ID + " NOT NULL, " +
-            COLUMN_CONSUMER_NAME + " TEXT NOT NULL, " + COLUMN_CONSUMER_PHONE + " TEXT UNIQUE NOT NULL, " + COLUMN_CONSUMER_TIMESTAMP + " DATETIME DEFAULT CURRENT_TIMESTAMP, " + COLUMN_CONSUMER_TOTAL_AMOUNT + " NOT NULL)";
 
-    db.execSQL(CREATE_TABLE_DELETED_USERS);
+        String CREATE_TABLE_DELETED_USERS = "CREATE TABLE IF NOT EXISTS deleted_users (" + COLUMN_CONSUMER_ID + " NOT NULL, " +
+                COLUMN_CONSUMER_NAME + " TEXT NOT NULL, " + COLUMN_CONSUMER_PHONE + " TEXT UNIQUE NOT NULL, " + COLUMN_CONSUMER_TIMESTAMP + " DATETIME DEFAULT CURRENT_TIMESTAMP, " + COLUMN_CONSUMER_TOTAL_AMOUNT + " NOT NULL)";
 
-    String CREATE_TABLE_DELETED_BILLS="CREATE TABLE IF NOT EXISTS deleted_bills (" + COLUMN_BILLS_ID + " NOT NULL, " + COLUMN_BILLS_AMOUNT + " REAL NOT NULL, " + COLUMN_BILLS_TIMESTAMP + " DATETIME DEFAULT CURRENT_TIMESTAMP, " + COLUMN_BILLS_CONSUMER_ID + " NOT NULL)";
-    db.execSQL(CREATE_TABLE_DELETED_BILLS);
+        db.execSQL(CREATE_TABLE_DELETED_USERS);
+
+        String CREATE_TABLE_DELETED_BILLS = "CREATE TABLE IF NOT EXISTS deleted_bills (" + COLUMN_BILLS_ID + " NOT NULL, " + COLUMN_BILLS_AMOUNT + " REAL NOT NULL, " + COLUMN_BILLS_TIMESTAMP + " DATETIME DEFAULT CURRENT_TIMESTAMP, " + COLUMN_BILLS_CONSUMER_ID + " NOT NULL)";
+        db.execSQL(CREATE_TABLE_DELETED_BILLS);
+
 
 
         // Create Trigger to update Consumer.total_amount
@@ -87,9 +89,11 @@ public class MyDBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_BILLS);
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_CONSUMER);
+
         onCreate(db);
+
+
+
     }
 
     // Method to insert a new consumer

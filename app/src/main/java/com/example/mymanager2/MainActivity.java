@@ -25,6 +25,8 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.google.android.material.button.MaterialButton;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -431,7 +433,7 @@ public class MainActivity extends AppCompatActivity {
         dialog.show();
         EditText name = dialog.findViewById(R.id.consumer_name);
         EditText number = dialog.findViewById(R.id.consumer_number);
-        Button add = dialog.findViewById(R.id.add_consumer);
+        MaterialButton add = dialog.findViewById(R.id.add_consumer);
         add.setOnClickListener(v -> {
             String name1 = name.getText().toString();
             String number1 = number.getText().toString();

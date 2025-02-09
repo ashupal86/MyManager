@@ -1,0 +1,82 @@
+[33mcommit f1001cca6c9376ea2da894d40f699ef4a8844981[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mtesting[m[33m)[m
+Author: ashupal86 <mr.ashu1810@gmail.com>
+Date:   Tue Feb 4 23:51:09 2025 +0530
+
+    feat: try to add new consumer button in accounts intent.
+
+[33mcommit 29bcb15ae0494aad20303f58078c393295b48f69[m[33m ([m[1;32mmain[m[33m)[m
+Author: ashupal86 <mr.ashu1810@gmail.com>
+Date:   Tue Feb 4 23:50:01 2025 +0530
+
+    feat: try to add new consumer button in accounts intent.
+
+[33mcommit 8fc73287198822b7a987611bec8abe70c146e6be[m[33m ([m[1;31morigin/main[m[33m)[m
+Merge: d7e19a1 5b9a390
+Author: ashupal86 <mr.ashu1810@gmail.com>
+Date:   Wed Jan 29 23:44:52 2025 +0530
+
+    Merge remote-tracking branch 'origin/main'
+    
+    # Conflicts:
+    #       app/src/main/res/drawable/delete_1_svgrepo_com.xml
+    #       app/src/main/res/values-night/themes.xml
+    #       app/src/main/res/values/themes.xml
+
+[33mcommit d7e19a1f0edd2a78c170422ddcf7445dec11245d[m
+Author: ashupal86 <mr.ashu1810@gmail.com>
+Date:   Wed Jan 29 23:44:20 2025 +0530
+
+    fix: dark theme delete button not showing.
+
+[33mcommit 5b9a390b8bf234965936782c56c6c3f1543a4a29[m
+Author: ashupal86 <mr.ashu1810@gmail.com>
+Date:   Mon Jan 27 00:43:31 2025 +0530
+
+    fix: dark theme delete button not showing.
+
+[33mcommit 732c37f62dfef12a7de386ea8c843599bf988b5c[m
+Author: ashupal86 <mr.ashu1810@gmail.com>
+Date:   Mon Jan 27 00:06:43 2025 +0530
+
+    fix: button click multiple app crash.
+    feat: delete the consumer from the current list and only display their account in acountactivity also removes the bills of that particular person but saved in a table which can be shown in next update in acount activity.
+
+[33mcommit fa499094a8a4144d9c68df490e411aef758bb5ed[m
+Author: ashupal86 <mr.ashu1810@gmail.com>
+Date:   Sat Jan 25 22:36:07 2025 +0530
+
+    Fix: Minor casin and cashout on both the textfields if one is empty.
+    Bug: calculation error for negative values.
+
+[33mcommit 1b0c69f8dad2147fa2d28ea29d08cc21d10eb444[m[33m ([m[1;33mtag: [m[1;33mv1.2.0[m[33m)[m
+Author: ashupal86 <mr.ashu1810@gmail.com>
+Date:   Sat Jan 25 22:04:33 2025 +0530
+
+    feat: Calculator error solved with additional functionality, Imroved ui and live calculation result.
+
+[33mcommit ea777f8a5a6aa151a57caed6a3391b01b07571b7[m[33m ([m[1;33mtag: [m[1;33mv1.1.0[m[33m)[m
+Author: ashupal86 <mr.ashu1810@gmail.com>
+Date:   Sat Jan 25 00:24:25 2025 +0530
+
+    feat: Improved Ui for dark theme and light theme. Calculator working and both the pages with history in local storage working
+
+[33mcommit d5020ba60cf580c791dc1e5942974cdbc245cb3b[m
+Author: ashupal86 <mr.ashu1810@gmail.com>
+Date:   Fri Jan 24 01:10:56 2025 +0530
+
+    Feat: History and Account activity working and fetching all the bills and consumer from db.
+    improvement in UI/UX of calculaotr.
+    Bug: Implement calculaotr functionality with dislaying hisotry and storign string.
+
+[33mcommit e655b32e6a580ba48c9906bc42ca1921237b1fd0[m
+Author: ashupal86 <mr.ashu1810@gmail.com>
+Date:   Thu Jan 23 10:55:32 2025 +0530
+
+    Feat: Bills,Consumer Added and working
+    Bug: consumer_card.xml is not optimized for ui.
+
+[33mcommit c4d1c278f82a4477a0b53af6df0211442edecf88[m
+Author: ashupal86 <mr.ashu1810@gmail.com>
+Date:   Wed Jan 22 00:53:24 2025 +0530
+
+    recycle view not working
